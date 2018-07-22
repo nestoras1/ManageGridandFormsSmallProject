@@ -15,9 +15,7 @@ public class Orders
   
     public Orders()
     {
-        //
-        // TODO: Add constructor logic here
-        //
+        
     }
 
 }

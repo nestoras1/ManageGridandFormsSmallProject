@@ -49,22 +49,46 @@ public partial class _Default : System.Web.UI.Page
 
 
     [WebMethod]
-    public int EditOrders(Orders orders)
+    public static void AddOrders(Orders orders)
     {
-
         cn.Open();
         SqlCommand command1 = cn.CreateCommand();
         command1.CommandText = "INSERT INTO dbo.Orders(ShipName, ShipAddress, ShipCountry) VALUES (@ShipName, @ShipAddress, @ShipCountry)";
         command1.Parameters.AddWithValue("@ShipName", orders.ShipName);
         command1.Parameters.AddWithValue("@ShipAddress", orders.ShipAddress);
         command1.Parameters.AddWithValue("@ShipCountry", orders.ShipCountry);
-
-        return command1.ExecuteNonQuery();
+        command1.ExecuteNonQuery();
     }
 
     [WebMethod]
-    public static string test1()
+    public static void EditOrders(Orders orders)
     {
-        return "skata";
+        cn.Open();
+        SqlCommand command1 = cn.CreateCommand();
+        command1.CommandText = "UPDATE dbo.Orders set ShipName = '@ShipName', ShipAddress = '@ShipAddress', ShipCountry = '@ShipCountry' where OrderId = '" + orders.OrderId.ToString() + "'";
+        command1.Parameters.AddWithValue("@ShipName", orders.ShipName);
+        command1.Parameters.AddWithValue("@ShipAddress", orders.ShipAddress);
+        command1.Parameters.AddWithValue("@ShipCountry", orders.ShipCountry);
+        command1.ExecuteNonQuery();
+    }
+
+    [WebMethod]
+    public static void DeleteOrders(Orders orders)
+    {
+        cn.Open();
+        SqlCommand command1 = cn.CreateCommand();
+        command1.CommandText = "Delete from dbo.Orders where OrderID = '" + orders.OrderId;
+        command1.ExecuteNonQuery();
+    }
+
+
+    protected void Logout_Click(object sender, EventArgs e)
+    {
+        Session.Clear();
+        Session.Abandon();
+        Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1));
+        Response.Cache.SetCacheability(HttpCacheability.NoCache);
+        Response.Cache.SetNoStore();
+        Response.Redirect("Login.aspx",false);
     }
 }

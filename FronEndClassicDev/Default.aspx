@@ -11,7 +11,6 @@
     <script src="Scripts/jquery.jqGrid.js"></script>
     <script src="Scripts/grid.locale-en.js"></script>
     <link href="CSS/ui.jqgrid.css" rel="stylesheet" />
-
     
     <script type="text/javascript"> 
         $(document).ready(function () {
@@ -40,13 +39,6 @@
                         search: false,
                         editable: true
                     },
-      //              {
-						//label: 'ShipCity',
-      //                  name: 'ShipCity',
-      //                  width: 35,
-      //                  search: true,
-      //                  editable: true
-      //              },
                     {
 						label: 'ShipCountry',
                         name: 'ShipCountry',
@@ -56,7 +48,7 @@
                     }
                 ],
                 loadonce: true,
-                viewrecords: true, // show the current page, data rang and total records on the toolbar
+                viewrecords: true, 
                 height: 450,
                 width: 850,
                 rowList: [5, 10, 15],
@@ -70,35 +62,32 @@
             $("#jqGrid").jqGrid('navGrid', '#jqGridPager', { edit: true, add: true, del: true, search: true, refresh: true, searchtext: "Search", addtext: "Add", edittext: "Edit", deltext: "Delete", refreshtext: "Refresh" },
                 {
                     //edit
-                    url: 'Default.aspx/EditOrders',  
-                    closeOnEscape: true,  
-                    closeAfterEdit: true,  
-                    recreateForm: true,  
-                    afterComplete: function (response) {  
-                        if (response.responseText) {  
-                            alert(response.responseText);  
-                        }  
+                    width: 600,
+                    url: 'Default.aspx/EditOrders',
+                    closeAfterEdit: true,
+                    afterComplete: function (response) {
+                        $('#jqGrid').setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
                     }
                 },
                 {
                     //add
                     width: 600,
-                    url: 'Default.aspx/InsertOrders',
+                    url: 'Default.aspx/AddOrders',
                     closeAfterEdit: true,
                     afterComplete: function (response) {
-                        $('#grid').setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
+                        $('#jqGrid').setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
                     }
                 },
                 {
                     //delete
+                    url: 'Default.aspx/DeleteOrders',
                     closeOnEscape: true,
                     closeAfterDelete: true,
                     reloadAfterSubmit: true,
                     closeOnEscape: true,
                     drag: true,
                     afterComplete: function (response) {  
-                        if (response.responseText) {  
-                        }  
+                        $('#jqGrid').setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid');
                     }
                 }
 
@@ -109,7 +98,6 @@
             function fetchGridData() {
                 
                 var gridArrayData = [];
-				// show loading message
 				$("#jqGrid")[0].grid.beginReq();
                 $.ajax({
                             url: "Default.aspx/LoadData",
@@ -125,15 +113,11 @@
                                 OrderID: item.OrderID,
                                 ShipName: item.ShipName,
                                 ShipAddress: item.ShipAddress,
-                                //ShipCity: item.ShipCity,
                                 ShipCountry: item.ShipCountry
                             });                            
                         }
-						// set the new data
 						$("#jqGrid").jqGrid('setGridParam', { data: gridArrayData});
-						// hide the show message
 						$("#jqGrid")[0].grid.endReq();
-						// refresh the grid
 						$("#jqGrid").trigger('reloadGrid');
                     }
                 });
@@ -147,18 +131,16 @@
                 return cellValue;
             };
         });
-
-
-    </script>
- 
+        </script>
 </head>
 <body>
     <form id="form1" runat="server">
         <div>
                 <table id="jqGrid"></table>
-                <div id="jqGridPager"></div>
+                <div id="jqGridPager" ></div>
         </div>
-        <asp:Button ID="logout" runat="server" Text="Logout" OnClick="logout_Click"/>
+
+        <asp:Button ID="Logout" runat="server" Text="Logout" OnClick="Logout_Click" />
     </form>
 </body>
 </html>
